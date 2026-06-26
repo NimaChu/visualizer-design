@@ -1,27 +1,17 @@
 ---
 name: visualizer-design
-version: 1.0.0
-summary: "Codex-compatible SVG/HTML visual design system for professional diagrams, charts, interactive widgets, and illustrations."
-triggers:
-  - visualize
-  - diagram
-  - chart
-  - draw
-  - illustrate
-  - "show me"
-  - "画图"
-  - "可视化"
-  - "流程图"
-  - "图表"
+description: Create polished inline SVG and lightweight HTML visuals for explaining complex information in agent chat. Use when the user asks to visualize, draw, show a diagram, chart, flow, architecture, process, comparison, timeline, concept map, state machine, or asks to explain a concept, principle, workflow, lifecycle, mechanism, system design, or "how X works" where structure would be clearer visually. Also trigger for Chinese requests like 可视化, 画图, 图解, 流程, 原理, 工作机制, 工作流程, 架构, 对比, 解释一下. Choose the output format by need; use direct fenced SVG as a strong default for static custom visual explanations in OpenCode/Codex, Mermaid for simple canonical diagrams, markdown tables for simple comparisons, and local HTML for interactive artifacts.
 ---
 
 # Visualizer Design System
 
-Produce professional SVG/HTML visuals: diagrams, charts, interactive widgets, and illustrations that Codex can return as Markdown, Mermaid, local files, or browser-previewable artifacts.
+Produce professional visuals that agents can return directly in chat or as local artifacts: inline SVG, Mermaid, lightweight HTML, local SVG files, local HTML files, charts, maps, and compact markdown tables.
 
 ## When to Use
 
-- User says "show me", "visualize", "diagram", "chart", "draw", "illustrate"
+- User says "show me", "visualize", "diagram", "chart", "draw", "illustrate", "画图", "可视化", "流程图", or "图表"
+- User asks to explain a concept, principle, workflow, lifecycle, mechanism, architecture, comparison, or "how X works"
+- User says "解释一下", "工作原理", "工作机制", "工作流程", "图解", "架构", "流程", "对比", or similar Chinese phrasing
 - Educational/teaching requests — diagrams make learning far more effective
 - Comparing concepts where a visual is clearer than prose
 - Architecture & systems design discussions
@@ -34,17 +24,29 @@ Produce professional SVG/HTML visuals: diagrams, charts, interactive widgets, an
 3. **Compact**: show the essential visual, explain the rest in normal response text
 4. **Separated**: prose belongs in the reply; the visual contains only visual content and necessary labels
 
-## Codex Delivery Modes
+## Delivery Modes
 
-Choose the smallest delivery mode that satisfies the request.
+Choose the smallest delivery mode that satisfies the request. Do not force one format when another is clearer or more reliable.
 
-- **Markdown/Mermaid**: use Mermaid for standard flowcharts, ERDs, state machines, sequence diagrams, and architecture diagrams when custom polish is not required.
-- **Inline code block**: return a fenced `svg` or `html` block when the user wants source they can inspect or reuse.
-- **Local SVG file**: write a `.svg` file in the workspace for polished static diagrams, then provide a clickable absolute file link. When useful in the Codex desktop app, show the file with Markdown image syntax using the absolute path.
+- **Inline fenced SVG**: strong default for static custom visuals in chat. Use for polished diagrams, architecture maps, timelines, concept maps, state machines, comparison visuals, and explanatory illustrations.
+- **Mermaid**: use for simple canonical flowcharts, ERDs, state machines, and sequence diagrams when the host supports Mermaid and the standard syntax is enough. Do not use Mermaid merely because a diagram has arrows; if the request is a visual explanation of a concept or mechanism, prefer inline SVG.
+- **Markdown table**: use for simple comparisons when a table is clearer and lighter than a diagram.
+- **Inline HTML fragment**: use only when the user needs source they can inspect or reuse. Keep it as a fragment, not a full document.
+- **Local SVG file**: write a `.svg` file for polished static diagrams that need reuse, screenshotting, or iteration.
 - **Local HTML file**: write a `.html` file for interactive controls, Chart.js, D3 maps, steppers, or multi-part widgets. If the artifact needs a server, start one and provide the local URL.
-- **Data Analytics widget**: for quantitative charts backed by reviewed table data, prefer Codex's Data Analytics chart/report widgets when available and appropriate.
 
-Do not use host-specific widget APIs. This skill is designed for Codex surfaces.
+Do not use host-specific widget APIs unless the current environment explicitly provides them and the user wants that output. For OpenCode/Codex chat, favor portable direct-rendering formats: markdown tables, Mermaid when supported, and fenced SVG.
+
+## SVG Preference Heuristics
+
+Prefer inline fenced SVG when any of these are true:
+
+- The user asks for a visual explanation of a concept, principle, system, workflow, or mechanism
+- The answer would otherwise need multiple paragraphs to describe relationships, feedback loops, layers, or actors
+- The visual benefits from spatial grouping, emphasis, annotations, or a polished teaching style
+- The user says "可视化解释", "图解", "解释工作原理", "工作机制", or similar phrasing
+
+If you say you will output SVG, output SVG in the final answer. Do not announce SVG and then switch to Mermaid or plain markdown.
 
 ## Quick Reference
 
@@ -57,6 +59,10 @@ Do not use host-specific widget APIs. This skill is designed for Codex surfaces.
 | Chart.js bar/line/doughnut charts | `references/chart-guide.md` |
 | D3 geographic choropleth maps | `references/map-guide.md` |
 | Art and illustration style | `references/art-guide.md` |
+
+## Validation
+
+For local `.svg` files, run `scripts/check-svg.py <file.svg>` before final delivery. For inline SVG, mentally apply the same checks before answering.
 
 ## Execution Checklist
 
