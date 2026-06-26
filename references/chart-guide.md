@@ -1,5 +1,12 @@
 # Chart.js Guide
 
+## Data Integrity
+- If the user provides data, chart only that data
+- If the data is missing, ask for it or create a clearly labeled schematic/example chart
+- Never present invented numbers as real measurements
+- Include units, time ranges, and source assumptions in prose outside the visual
+- Round displayed numbers consistently and keep labels faithful to the source data
+
 ## Setup
 ```html
 <div style="position: relative; width: 100%; height: 300px;">

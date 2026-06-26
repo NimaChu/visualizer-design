@@ -1,0 +1,7 @@
+interface:
+  display_name: "Visualizer Design"
+  short_description: "Create polished chat-native SVG, Mermaid, and lightweight HTML visuals."
+  default_prompt: "Use $visualizer-design to explain this topic with a clear inline visual."
+
+policy:
+  allow_implicit_invocation: true
